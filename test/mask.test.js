@@ -32,63 +32,129 @@ suite('mask', function() {
   });
 
   suite('parsers', function() {
-    test('ssn', function() {
-      assert.equal(form.mask('parse', 'ssn', ''), '___-__-____');
-      assert.equal(form.mask('parse', 'ssn', '123456789'), '123-45-6789');
-      assert.equal(form.mask('parse', 'ssn', '1234567'), '123-45-67__');
-      assert.equal(form.mask('parse', 'ssn', '123-45-6789'), '123-45-6789');
-      assert.equal(form.mask('parse', 'ssn', '123 45 6789'), '123-45-6789');
-      assert.equal(form.mask('parse', 'ssn', '1234567890'), '123-45-6789');
-      assert.equal(form.mask('parse', 'ssn', 'abc456789'), '___-45-6789');
+    suite('ssn', function() {
+      test('empty', function() {
+        assert.equal(form.mask('parse', 'ssn', ''), '___-__-____');
+      });
+      test('plain numbers', function() {
+        assert.equal(form.mask('parse', 'ssn', '123456789'), '123-45-6789');
+      });
+      test('partially filled in, just numbers', function() {
+        assert.equal(form.mask('parse', 'ssn', '1234567'), '123-45-67__');
+      });
+      test('filled out correctly', function() {
+        assert.equal(form.mask('parse', 'ssn', '123-45-6789'), '123-45-6789');
+      });
+      test('filled out with spaces', function() {
+        assert.equal(form.mask('parse', 'ssn', '123 45 6789'), '123-45-6789');
+      });
+      test('filled out with too many numbers', function(){
+        assert.equal(form.mask('parse', 'ssn', '1234567890'), '123-45-6789');  
+      });
+      test('invalid characters', function() {
+        assert.equal(form.mask('parse', 'ssn', 'abc456789'), '___-45-6789');
+      });
     });
-    test('phone (nanp style)', function() {
-      assert.equal(form.mask('parse', 'phone', ''), '(___) ___-____');
-      assert.equal(form.mask('parse', 'phone', '5555555555'), '(555) 555-5555');
-      assert.equal(form.mask('parse', 'phone', '55555555'), '(555) 555-55__');
-      assert.equal(form.mask('parse', 'phone', '(555)555-5555'), '(555) 555-5555');
-      assert.equal(form.mask('parse', 'phone', '(555) 555 5555'), '(555) 555 5555');
-      assert.equal(form.mask('parse', 'phone', '+1 (555)555-5555'), '(555) 555-5555');
-      assert.equal(form.mask('parse', 'phone', '(abc)555-5555'), '(___) 555-5555');
-      assert.equal(form.mask('parse', 'phone', '555.555.5555'), '(555) 555-5555');
-      assert.equal(form.mask('parse', 'phone', '55555555555'), '(555) 555-5555');
+    suite('phone (nanp style)', function() {
+      test('empty', function() {
+        assert.equal(form.mask('parse', 'phone', ''), '(___) ___-____');
+      });
+      test('plain numbers', function() {
+        assert.equal(form.mask('parse', 'phone', '5555555555'), '(555) 555-5555');
+      });
+      test('partially filled in, just numbers', function() {
+        assert.equal(form.mask('parse', 'phone', '55555555'), '(555) 555-55__');
+      });
+      test('filled out without space', function() {
+        assert.equal(form.mask('parse', 'phone', '(555) 555-5555'), '(555) 555-5555');
+      });
+      test('filled out with spaces', function() {
+        assert.equal(form.mask('parse', 'phone', '(555) 555 5555'), '(555) 555 5555');
+      });
+      test('country code included', function() {
+        assert.equal(form.mask('parse', 'phone', '+1 (555)555-5555'), '(555) 555-5555');
+      });
+      test('invalid characters', function() {
+        assert.equal(form.mask('parse', 'phone', '(abc)555-5555'), '(___) 555-5555');
+      });
+      test('filled out with periods', function() {
+        assert.equal(form.mask('parse', 'phone', '555.555.5555'), '(555) 555-5555');
+      });
+      test('too many numbers', function() {
+        assert.equal(form.mask('parse', 'phone', '55555555555'), '(555) 555-5555');
+      });
     });
-    test('email', function() {
-      assert.equal(form.mask('parse', 'email', ''), '___@___.___');
-      assert.equal(form.mask('parse', 'email', 'email'), 'email@___.___');
-      assert.equal(form.mask('parse', 'email', 'a'), 'a@___.___');
-      assert.equal(form.mask('parse', 'email', 'email+test'), 'email+test@___.___');
-      assert.equal(form.mask('parse', 'email', 'email_test'), 'email_test@___.___');
-      assert.equal(form.mask('parse', 'email', 'email/test'), 'email_test@___.___');
-      assert.equal(form.mask('parse', 'email', 'email@example'), 'email@example.___');
-      assert.equal(form.mask('parse', 'email', 'email@local'), 'email@local.___');
-      assert.equal(form.mask('parse', 'email', 'email@example.com'), 'email@example.com');
-      assert.equal(form.mask('parse', 'email', 'email@example.ru'), 'email@example.ru');
-      assert.equal(form.mask('parse', 'email', 'email@example.f+t'), 'email@example.f_t');
+    suite('email', function() {
+      test('empty', function() {
+        assert.equal(form.mask('parse', 'email', ''), '___@___.___');
+      });
+      test('partially filled out', function() {
+        assert.equal(form.mask('parse', 'email', 'email'), 'email__.___');
+      });
+      test('with +', function() {
+        assert.equal(form.mask('parse', 'email', 'email+test'), 'email+test_');
+      });
+      test('with _', function() {
+        assert.equal(form.mask('parse', 'email', 'email_test'), 'email_test_');
+      });
+      test('invalid character', function() {
+        assert.equal(form.mask('parse', 'email', 'email/test'), 'emailtest__');
+      });
+      test('with @', function() {
+        assert.equal(form.mask('parse', 'email', 'email@example'), 'email@example');
+      });
+      test('filled out completely', function() {
+        assert.equal(form.mask('parse', 'email', 'email@example.com'), 'email@example.com');
+      });
     });
-    test('number format', function() {
-      assert.equal(form.mask('parse', 'number', ''), '');
-      assert.equal(form.mask('parse', 'number', '10'), '10');
-      assert.equal(form.mask('parse', 'number', '1000'), '1,000');
-      assert.equal(form.mask('parse', 'number', '10,000'), '10,000');
-      assert.equal(form.mask('parse', 'number', '$1,000'), '$1,000');
-      assert.equal(form.mask('parse', 'number', 'abcd'), 'abcd');
-      assert.equal(form.mask('parse', 'number', '1000.00'), '1,000.00');
-      assert.equal(form.mask('parse', 'number', '10,000.0000'), '10,000.0000');
-
-      // Nice to have
-      // Maybe add support for locales instead.
-      assert.equal(form.mask('parse', 'number', '100,00'), '100.00');
+    suite('number format (formatters)', function() {
+      test('empty', function() {
+        assert.equal(form.mask('parse', 'number', ''), '');
+      });
+      test('10', function() {
+        assert.equal(form.mask('parse', 'number', '10'), '10');
+      });
+      test('1,000', function() {
+        assert.equal(form.mask('parse', 'number', '1000'), '1,000');
+      });
+      test('10,000', function() {
+        assert.equal(form.mask('parse', 'number', '10,000'), '10,000');
+      });
+      test('$1,000', function() {
+        assert.equal(form.mask('parse', 'number', '$1,000'), '1,000');
+      });
+      test('invalid characters', function() {
+        assert.equal(form.mask('parse', 'number', 'abcd'), '');
+      });
+      test('1,000.00', function() {
+        assert.equal(form.mask('parse', 'number', '1000.00'), '1,000.00');
+      });
+      test('1,000,000.000', function() {
+        assert.equal(form.mask('parse', 'number', '1000000.000'), '1,000,000.000');
+      });
     });
-    test('custom', function() {
-      assert.equal(form.mask('parse', 'spyphone', ''), '___-____');
-      assert.equal(form.mask('parse', 'spyphone', '5555555'), '555-5555');
-      assert.equal(form.mask('parse', 'spyphone', '55555'), '555-55__');
-      assert.equal(form.mask('parse', 'spyphone', '(555)555-5555'), '555-5555');
-      assert.equal(form.mask('parse', 'spyphone', '(555) 555 5555'), '555-5555');
-      assert.equal(form.mask('parse', 'spyphone', '+1 (555)555-5555'), '555-5555');
-      assert.equal(form.mask('parse', 'spyphone', '(abc)555-5555'), '555-5555');
-      assert.equal(form.mask('parse', 'spyphone', '555.555.5555'), '555-5555');
-      assert.equal(form.mask('parse', 'spyphone', '55555555555'), '555-5555');
+    suite('custom masks', function() {
+      test('empty', function() {
+        assert.equal(form.mask('parse', 'spyphone', ''), '___-____');
+      });
+      test('plain', function() {
+        assert.equal(form.mask('parse', 'spyphone', '5555555'), '555-5555');
+      });
+      test('not enough characters', function() {
+        assert.equal(form.mask('parse', 'spyphone', '55555'), '555-55__');
+      });
+      test('correctly filled out', function() {
+        assert.equal(form.mask('parse', 'spyphone', '(555) 555-5555'), '555-5555');
+      });
+      test('filled out spaces', function() {
+        assert.equal(form.mask('parse', 'spyphone', '(555) 555 5555'), '555-5555');
+      });
+      test('invalid characters', function() {
+        assert.equal(form.mask('parse', 'spyphone', '(abc)555-5555'), '555-5555');
+      });
+      test('too many characters', function() {
+        assert.equal(form.mask('parse', 'spyphone', '55555555555'), '555-5555');
+      });
     });
   });
 
