@@ -1,0 +1,9 @@
+{
+  "name": "mask",
+  "version": "0.0.0",
+  "private": true,
+  "devDependencies": {
+    "fatjs": "~0.1.0",
+    "grunt": "~0.4.0"
+  }
+}
