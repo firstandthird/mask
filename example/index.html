@@ -10,17 +10,18 @@
 
     <form id="spySignup">
       <p><label for="spyName">Name</label><input type="text" id="spyName"></p>
-      <p><label for="spySSN">SSN</label><input type="text" id="spySSN" data-mask="ssn"></p>
-      <p><label for="spyEmail">Email</label><input type="text" id="spyEmail" data-mask="email"></p>
-      <p><label for="spyPhone">Phone</label><input type="text" id="spyPhone" data-mask="phone"></p>
+      <p><label for="spySSN">SSN</label><input type="text" id="spySSN" data-mask data-mask-type="ssn"></p>
+      <p><label for="spyEmail">Email</label><input type="text" id="spyEmail" data-mask data-mask-type="email"></p>
+      <p><label for="spyPhone">Phone</label><input type="text" id="spyPhone" data-mask data-mask-type="phone"></p>
     </form>
 
     <script src="../dist/mask.js"></script>
 
     <script>
-      $('#spySignup').mask({
+      $('[data-mask]').mask({
         spyphone: {
           mask: '___-____',
+          strict: true,
           regex: /([\d_]{3})?-?([\d_]{4})?/
         }
       });
