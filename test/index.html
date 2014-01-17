@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>mask Tests</title>
+  <link rel="stylesheet" href="../node_modules/fatjs/node_modules/grunt-mocha/node_modules/mocha/mocha.css" />
+  <script src="../bower_components/assert/assert.js"></script>
+  <script src="../node_modules/fatjs/node_modules/grunt-mocha/node_modules/mocha/mocha.js"></script>
+  <script src="../bower_components/jquery/jquery.js"></script>
+  <script src="../bower_components/fidel/dist/fidel.js"></script>
+  <script>
+    if (window.location.search == '?blanket=1') {
+      document.write('<scr'+'ipt src="../bower_components/blanket/dist/qunit/blanket.min.js" data-cover-adapter="../bower_components/blanket/src/adapters/mocha-blanket.js"></sc'+'ript>');
+    }
+  </script>
+  <script>mocha.setup('tdd')</script>
+</head>
+<body>
+  <div id="mocha"></div>
+  <div id="fixture" style="display: none">
+    <form id="spySignup">
+      <p><label for="spyName">Name</label><input type="text" id="spyName"></p>
+      <p><label for="spySSN">SSN</label><input type="text" id="spySSN" data-mask="ssn"></p>
+      <p><label for="spyEmail">Email</label><input type="text" id="spyEmail" data-mask="email"></p>
+      <p><label for="spyPhone">Phone</label><input type="text" id="spyPhone" data-mask="spyphone"></p>
+    </form>
+  </div>
+  <script src="../dist/mask.js" data-cover></script>
+  <script src="mask.test.js"></script>
+  <script>
+    if (navigator.userAgent.indexOf('PhantomJS') < 0) {
+      mocha.run();
+    }
+  </script>
+</body>
+</html>
