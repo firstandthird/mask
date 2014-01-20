@@ -1,19 +1,18 @@
 var form;
 
-function input(el, text, index) {
+function writeVal(el, text, index) {
   index = index || 0;
-  var e = $.Event('input');
   var val = el.val().split('');
-  val.splice(index, 0, 'text');
+  val.splice(index, 0, text);
   val = val.join('');
 
   el.val(val);
-  el.trigger(e);
+  el.trigger('input');
 }
 
 suite('mask', function() {
   setup(function() {
-    form = $("#spySignup");
+    form = $("[data-mask]");
   });
 
   suite('init', function() {
@@ -163,64 +162,46 @@ suite('mask', function() {
     });
   });
 
-  suite.skip('input', function() {
+  suite('input', function() {
     test('should parse as typed', function() {
       var el = $('#spySSN');
-      el.val('');
-      assert.equal(el.val(), '___-__-____');
-      input(el, 1, 0);
-      assert.equal(el.val(), '1__-__-____');
-      input(el, 2, 1);
-      assert.equal(el.val(), '12_-__-____');
-      input(el, 3, 2);
-      assert.equal(el.val(), '123-__-____');
-      input(el, 4, 3);
-      input(el, 5, 4);
-      assert.equal(el.val(), '123-45-____');
-      input(el, 6, 5);
-      input(el, 7, 6);
-      input(el, 8, 7);
-      input(el, 9, 8);
-      assert.equal(el.val(), '123-45-6789');
-    });
-    test('too many characters shouldn\'t matter', function() {
-      var el = $('#spySSN');
-      el.val('');
-      assert.equal(el.val(), '___-__-____');
-      input(el, 1, 0);
-      assert.equal(el.val(), '1__-__-____');
-      input(el, 2, 1);
-      assert.equal(el.val(), '12_-__-____');
-      input(el, 3, 2);
-      assert.equal(el.val(), '123-__-____');
-      input(el, 4, 3);
-      input(el, 5, 4);
-      assert.equal(el.val(), '123-45-____');
-      input(el, 6, 5);
-      input(el, 7, 6);
-      input(el, 8, 7);
-      input(el, 9, 8);
-      assert.equal(el.val(), '123-45-6789');
-      input(el, 0, 9);
-      assert.equal(el.val(), '123-45-6789');
-    });
-    test('invalid characters', function() {
-      var el = $('#spySSN');
-      el.val('');
-      assert.equal(el.val(), '___-__-____');
-      input(el, 1, 0);
-      assert.equal(el.val(), '1__-__-____');
-      input(el, 'a', 1);
-      assert.equal(el.val(), '1__-__-____');
-      input(el, 3, 2);
-      assert.equal(el.val(), '1_3-__-____');
+      var val = '';
+      writeVal(el, '', 0);
+
+      val = el.val();
+      assert.equal(val, '___-__-____');
+      writeVal(el, 0, 0);
+      val = el.val();
+      console.log(val);
+      assert.equal(val, '0__-__-____');
+      writeVal(el, 1, 1);
+      val = el.val();
+      assert.equal(val, '01_-__-____');
+      writeVal(el, 2, 2);
+      val = el.val();
+      assert.equal(val, '012-__-____');
+      writeVal(el, 3, 4);
+      writeVal(el, 4, 5);
+      val = el.val();
+      assert.equal(val, '012-34-____');
+      writeVal(el, 5, 7);
+      writeVal(el, 6, 8);
+      writeVal(el, 7, 9);
+      writeVal(el, 8, 10);
+      val = el.val();
+      assert.equal(val, '012-34-5678');
     });
     test('handle pasted / pre-filled / change', function() {
       var el = $('#spySSN');
+      var val = '';
       el.val('');
-      assert.equal(el.val(), '___-__-____');
+      el.trigger('input');
+      val = el.val();
+      assert.equal(val, '___-__-____');
       el.val('123456789');
-      assert.equal(el.val(), '123-45-6789');
+      el.trigger('input');
+      val = el.val();
+      assert.equal(val, '123-45-6789');
     });
   });
 });
