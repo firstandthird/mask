@@ -13,7 +13,7 @@ function input(el, text, index) {
 
 suite('mask', function() {
   setup(function() {
-    form = $("#spySignup");
+    form = $("[data-mask]");
   });
 
   suite('init', function() {
