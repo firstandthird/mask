@@ -1,7 +1,7 @@
 {
   "name": "mask",
   "description": "Javascript input mask plugin",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "homepage": "https://github.com/firstandthird/mask",
   "license": "MIT",
   "copyright": "First + Third",

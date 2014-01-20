@@ -1,4 +1,11 @@
 
+0.1.0 / 2014-01-20 
+==================
+
+  * Better handling of invalid characters.
+  * Fixed input tests.
+  * Fixes cursor position when clicking in partially filled out input.
+
 0.0.1 / 2014-01-16 
 ==================
 
