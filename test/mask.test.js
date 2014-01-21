@@ -50,7 +50,7 @@ suite('mask', function() {
         assert.equal(form.mask('parse', 'ssn', '123 45 6789'), '123-45-6789');
       });
       test('filled out with too many numbers', function(){
-        assert.equal(form.mask('parse', 'ssn', '1234567890'), '123-45-6789');  
+        assert.equal(form.mask('parse', 'ssn', '1234567890'), '123-45-6789');
       });
       test('invalid characters', function() {
         // when more than one character is input at once, invalid characters are skipped.
