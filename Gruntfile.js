@@ -4,6 +4,9 @@ module.exports = function(grunt) {
     name: 'mask',
     //filename: '',
     //fullFilename: ''
+    bowerExclude: [
+      'jquery'
+    ]
   });
 
 };
